@@ -1,0 +1,1180 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use DBI;
+use Encode;
+use Business::BR::CNPJ qw(test_cnpj format_cnpj);
+use Business::BR::CPF qw(test_cpf format_cpf);
+
+#código da empresa em produção
+our $OTN_CODIGO = 1;
+our $MEDCAN_CODIGO = 4;
+our $LITORAL_CODIGO = 73;
+our $CAREMED_CODIGO = 512;
+our $NEOLIFE_CODIGO = 513;
+our $CORPUS_CODIGO = 573;
+our $ORTOLIFE_CODIGO = 574;
+our $RW_CODIGO = 644;
+our $OSSEOMED_CODIGO = 882;
+our $BRASUL_CODIGO = 883;
+our $ALIANCA_CODIGO = 884;
+our $MINASRIO_CODIGO = 1192;
+our $ORTOMUNDI_CODIGO = 1451;
+our $NEW_CODIGO = 1470;
+our $STO_CODIGO = 1567;
+our $CAREFIX_CODIGO = 1571;
+our $AFAMED_CODIGO = 1685;
+our $TOP_CODIGO = 2024;
+our $INTERMEDICAL_CODIGO = 2325;
+our $ORTONAL_CODIGO = 2610;
+our $M3_CODIGO = 2657;
+our $ELIMED_CODIGO = 2734;
+our $ORTOPLATE_CODIGO = 2748;
+our $JIT_CODIGO = 2865;
+our $ORTOPLUS_CODIGO = 3160;
+our $OSTEOMAX_CODIGO = 3207;
+our $R2_CODIGO = 3550;
+our $RA_CODIGO = 3551;
+our $MOBI_CODIGO = 3552;
+our $BIOMETA_CODIGO = 3740;
+our $MAXXIMUM_CODIGO = 5810;
+our $OLTRAMED_CODIGO = 6256;
+our $PROTECH_CODIGO = 6516;
+our $CONECTA_CODIGO = 6517;
+our $NEWAUDIO_CODIGO = 7156;
+our $NOS_CODIGO = 7157;
+
+=begin
+our $_CODIGO = ;
+sub getCodigoEmpresa {
+	return 
+}
+=cut
+
+# Conecta ao banco
+sub conecta_db {
+	my $dbh = DBI->connect('DBI:mysql:v2surgical:localhost', 'root', 'sliver');
+	return $dbh;
+}
+
+sub conecta_db_demonstrar {
+	my $dbh = DBI->connect('DBI:mysql:v2surgical:s01.v2saude.com.br', 'suporte', 'pSDdEh9qtdFLsn10');
+	return $dbh;
+}
+
+sub getCodigoEmpresa {
+	return $OLTRAMED_CODIGO;
+}
+
+sub getCodigoEmpresaOTN {
+	return $OTN_CODIGO;
+}
+
+sub getCodigoEmpresaMEDCAN {
+	return $MEDCAN_CODIGO;
+}
+
+sub getCodigoEmpresaLITORAL {
+	return $LITORAL_CODIGO;
+}
+
+sub getCodigoEmpresaCAREMED {
+	return $CAREMED_CODIGO; 
+}
+
+sub getCodigoEmpresaNEOLIFE {
+	return $NEOLIFE_CODIGO; 
+}
+
+sub getCodigoEmpresaCORPUS {
+	return $CORPUS_CODIGO;
+}
+
+sub getCodigoEmpresaORTOLIFE {
+	return $ORTOLIFE_CODIGO;
+}
+
+sub getCodigoEmpresaRW {
+	return $RW_CODIGO;
+}
+
+sub getCodigoEmpresaOSSEOMED {
+	return $OSSEOMED_CODIGO;
+}
+
+sub getCodigoEmpresaBRASUL {
+	return $BRASUL_CODIGO;
+}
+
+sub getCodigoEmpresaALIANCA {
+	return $ALIANCA_CODIGO
+}
+
+sub getCodigoEmpresaMINAS {
+	return $MINASRIO_CODIGO;
+}
+
+sub getCodigoEmpresaORTOMUNDI {
+	return $ORTOMUNDI_CODIGO;
+}
+
+sub getCodigoEmpresaNEW {
+	return $NEW_CODIGO;
+}
+
+sub getCodigoEmpresaSTO {
+	return $STO_CODIGO;
+}
+
+sub getCodigoEmpresaCAREFIX {
+	return $CAREFIX_CODIGO;
+}
+
+sub getCodigoEmpresaAFAMED {
+	return $AFAMED_CODIGO;
+}
+
+sub getCodigoEmpresaTOP {
+	return $TOP_CODIGO;
+}
+
+sub getCodigoEmpresaINTERMEDICAL {
+	return $INTERMEDICAL_CODIGO;
+}
+
+sub getCodigoEmpresaORTONAL {
+	return $ORTONAL_CODIGO;
+}
+
+sub getCodigoEmpresaM3 {
+	return $M3_CODIGO; 
+}
+
+sub getCodigoEmpresaELIMED {
+	return $ELIMED_CODIGO;
+}
+
+sub getCodigoEmpresaORTOPLATE {
+	return $ORTOPLATE_CODIGO; 
+}
+
+sub getCodigoEmpresaJIT {
+	return $JIT_CODIGO;
+}
+
+sub getCodigoEmpresaORTOPLUS {
+	return $ORTOPLUS_CODIGO; 
+}
+
+sub getCodigoEmpresaOSTEOMAX {
+	return $OSTEOMAX_CODIGO;
+}
+
+sub getCodigoEmpresaR2 {
+	return $R2_CODIGO;
+}
+
+sub getCodigoEmpresaRA {
+	return $RA_CODIGO;
+}
+
+sub getCodigoEmpresaMOBI {
+	return $MOBI_CODIGO;
+}
+
+sub getCodigoEmpresaBIOMETA {
+	return $BIOMETA_CODIGO;
+}
+
+sub getCodigoEmpresaMAXXIMUM {
+	return $MAXXIMUM_CODIGO;
+}
+
+sub getCodigoEmpresaOLTRAMED {
+	return $OLTRAMED_CODIGO;
+}
+
+sub getCodigoEmpresaPROTECH {
+	return $PROTECH_CODIGO;
+}
+
+sub getCodigoEmpresaCONECTA {
+	return $CONECTA_CODIGO;
+}
+
+sub getCodigoEmpresaNEWAUDIO {
+	return $NEWAUDIO_CODIGO;
+}
+
+sub getCodigoEmpresaNOS {
+	return $NOS_CODIGO;
+}
+
+# Retorna apenas dígitos de uma string
+sub apenasDigitos {
+	my ($string) = @_;
+	$string =~ s/\D//g;
+	return $string;
+}
+
+# Tranforma um texto de utf-8 para latin1
+# Para palavras acentuadas
+sub toLatin1 {
+	my ($texto) = @_;
+	$texto = trim($texto);
+	my $decoded_text = decode('UTF-8', $texto);
+	$texto = encode('iso-latin-1', $decoded_text);
+	return $texto;
+}
+
+# Para pegar valor booleano para inserir no BD
+sub getBoolean {
+	my($bool) = @_;
+	if (!$bool) {
+		return pack( 'b0', '110' );
+	} else {
+		return pack( 'b1', '110' );
+	}
+}
+
+# Formata hora e retorna em HH:MM:SS
+sub formataHora {
+	my ($hora) = @_;
+	my ($hr, $min) = split(':', $hora);
+	$hr = converteValor($hr);
+	$min = converteValor($min);
+	if ($hr && $min) {
+		$hora = join(':', $hr, $min, '00');
+	} else {
+		$hora = undef;
+	}
+	return $hora;
+}
+
+# Pega uma data e transforma em uma timestamp
+sub getTimestamp {
+	my ($data) = @_;
+	my ($dia, $mes, $ano) = split('/', $data);
+	$dia = converteValor($dia);
+	$mes = converteValor($mes);
+	$ano = converteValor($ano);
+	if ($dia && $mes && $ano) {
+		$data = join('-', $ano, $mes, $dia);
+		$data .= ' 00:00:00';
+		return $data;
+	} else {
+		return undef;
+	}
+}
+
+# Prepara um campo data e retorno dd/MM/YYYY
+sub preparaData {
+	my ($data) = @_;
+	my ($dia, $mes, $ano) = split('/', $data);
+	$dia = converteValor($dia);
+	$mes = converteValor($mes);
+	$ano = converteValor($ano);
+	if ($dia && $mes && $ano) {
+		return join('-', $ano, $mes, $dia);
+	} elsif ($dia && $mes){
+		# Apenas mes/ano
+		$ano = $dia;
+		$dia = '01';
+		return join('-', $ano, $mes, $dia);
+	} else {
+		return undef;		
+	}
+}
+
+sub preparaDataBR {
+	my ($data) = @_;
+	if (!$data) {
+		return undef;
+	}
+	my ($ano, $mes, $dia) = split('-', $data);
+	$dia = converteValor($dia);
+	$mes = converteValor($mes);
+	$ano = converteValor($ano);
+	if ($dia && $mes && $ano) {
+		return join('/', $dia, $mes, $ano);
+	} else {
+		return undef;		
+	}
+}
+
+# Recebe um valor e converte para double
+sub converteValor {
+	my ($valor) = @_;
+	$valor = trim($valor);
+	$valor =~ s/\,/\|/g;
+	$valor =~ s/[R\$\.]//g;
+	$valor =~ s/\|/\./g;
+	return $valor * 1;
+}
+
+# Prepara um texto para ser utilizado
+sub preparaTexto {
+	my ($texto) = @_;
+	return trim(troca_letras($texto));
+}
+
+# Troca as letras incorretas
+sub troca_letras
+{
+	my($trocaletra) = @_;
+	$trocaletra =~ tr/[a-z]/[A-Z]/;
+	$trocaletra =~ tr/áâãàäÁÂÃÀÄ/AAAAAAAAA/;
+	$trocaletra =~ tr/éêëèÉÊËÈ/EEEEEEEE/;
+	$trocaletra =~ tr/íïîÍÏÎ/IIIIII/;
+	$trocaletra =~ tr/óôöõòÓÔÖÕÒ/OOOOOOOOO/;
+	$trocaletra =~ tr/úüûÚÜÛ/UUUUUU/;
+	$trocaletra =~ tr/çÇ/CC/;
+	$trocaletra = &trim($trocaletra);
+	return($trocaletra);
+}
+
+# Retira os espaços do início e fim
+sub trim
+{
+	my ($string) = @_;
+	$string =~ s/^\s+//;
+	$string =~ s/\s+$//;
+	$string =~ s/^\s+//;
+	return $string;
+}
+
+# Retorna o último código salvo no BD
+sub getUltimoCodigoDB {
+	my ($dbh) = @_;
+	
+	my $query = 'select last_insert_id() as codigo';
+	my $sth = $dbh->prepare($query);
+	$sth->execute;
+	my $row = $sth->fetchrow_hashref;
+	
+	return $row->{codigo};
+}
+
+# Retira as aspas duplas do início/fim da string
+sub preparaNome {
+	my ($nome) = @_;
+	if (index($nome, '"') == 1) {
+		$nome = substr($nome, index($nome, '"'));
+	}
+	if (index($nome, '"') == length($nome)) {
+		$nome = substr($nome, -1);
+	}
+	return $nome;
+}
+
+# Pega uma string, um char, corta a string e retorna o que vem APÓS o char
+sub cortarStringAposChar {
+	my ($string, $char) = @_;
+
+	# Verificar se a string não é vazia	
+	if ($string && $char) {
+		if (index($string, $char) != -1) {
+			while (index($string, $char) != -1) {
+				$string = substr($string, index($string, $char) + 1);
+			}
+		}
+	}
+	return trim($string);
+}
+
+# Pega uma string, um char, corta a string e retorna o que vem ANTES do char
+sub cortarStringAntesChar {
+	my ($string, $char) = @_;
+	
+	# Verificar se a string não é vazia
+	if ($string && $char) {
+		if (index($string, $char) != -1) {
+			while (index($string, $char) != -1) {
+				$string = substr($string, 0, index($string, $char));
+			}
+		}
+	}
+	return trim($string);
+}
+
+# Realiza a validação do cnpj
+sub validaCnpj {
+	my ($cnpj) = @_;
+	
+	$cnpj = trim($cnpj);
+	if (!$cnpj) {
+		return undef;
+	}
+	
+	# Caso informado com vários zeros, verificar
+	my $cnpjTest = $cnpj;
+	while (index($cnpjTest, '0') eq 0) {
+		$cnpjTest = substr($cnpjTest, 1);
+		if (!$cnpjTest) {
+			return undef;
+		}
+	}
+	
+	$cnpj = format_cnpj($cnpj);
+	if (test_cnpj($cnpj)) {
+		return $cnpj;
+	} else {
+		warn "CNPJ inválido: $cnpj";
+		return undef;
+	}	
+}
+
+# Realiza a validação do CPF
+sub validaCpf {
+	my ($cpf) = @_;
+
+	while (length($cpf) > 11) {
+		$cpf = substr($cpf, 1);
+	}
+	
+	if (!$cpf) {
+		return undef;
+	}
+	
+	# Caso informado com vários zeros, verificar
+	my $cpfTest = $cpf;
+	while (index($cpfTest, '0') eq 0) {
+		$cpfTest = substr($cpfTest, 1);
+		if (!$cpfTest) {
+			return undef;
+		}
+	}
+	
+	$cpf = format_cpf($cpf);
+	
+	if (test_cpf($cpf)) {
+		return $cpf;
+	} else {
+		warn "CPF inválido: $cpf";
+		return undef;
+	}
+}
+
+# Retorna o tipoPessoa de acordo com a boolean isPessoaFísica
+sub getTipoPessoa {
+	my ($isPF) = @_;
+	if ($isPF) {
+		return 'FISICA';
+	} else {
+		return 'JURIDICA';
+	}
+}
+
+# Pega o código da cidade de acordo com seu nome e UF
+sub getCidade {
+	my ($nome, $estado) = @_;
+	$nome =~  tr/ //s;
+	my $dbh = &conecta_db();
+	if (!$nome || !$estado) {
+		return undef;
+	}
+	
+	my $query = "select codigo from cidade where nome like ? and estado = ?";
+	my $sth   = $dbh->prepare($query);
+	$sth->execute($nome, $estado);
+	if (!$sth->rows) {
+		warn "Cidade desconhecida: $nome - $estado";
+		return undef;
+	}
+	
+	my $cidade = $sth->fetchrow_hashref;
+
+	return $cidade->{codigo};
+}
+
+# Pega o código da cidade de acordo com o código ibge
+sub getCidadeIbge {
+	my ($ibge) = @_;
+	my $dbh = &conecta_db();
+	
+	my $query = "select codigo from cidade where codigoIbge = ?";
+	my $sth   = $dbh->prepare($query);
+	$sth->execute($ibge);
+	if (!$sth->rows) {
+		warn "Cidade desconhecida: $ibge";
+	}
+	my $cidade = $sth->fetchrow_hashref;
+
+	return $cidade->{codigo};
+}
+
+# Pega o código do cliente pelo nome
+sub getClienteByNome {
+	my ($cliente) = @_;
+	my $dbh = conecta_db();
+	my $query = "SELECT codigo FROM `pessoa` WHERE `discriminator` LIKE 'clientefornecedor' 
+		AND `empresa` = ? and (`nome` like ? or razaoSocial like ?) ";
+	my $sth = $dbh->prepare($query);
+	$sth->execute(
+		getCodigoEmpresa(),
+		$cliente,
+		$cliente,
+	);
+	if (!$sth->rows) {
+		return undef;
+	}
+	my $clienteFornecedor = $sth->fetchrow_hashref;
+	return $clienteFornecedor->{codigo};
+}
+
+# Pega cliente pelo cnpj/cpf
+sub existeCliente {
+	my ($cnpj, $cpf) = @_;
+	my $dbh = conecta_db();
+	my $query = "select codigo from pessoa where empresa = ? and (cnpj = ? or cpf = ?)";
+	my $sth = $dbh->prepare($query);
+	$sth->execute(
+		getCodigoEmpresa(),
+		$cnpj,
+		$cpf,
+	);
+	if ($sth->rows) {
+		my $pessoa = $sth->fetchrow_hashref;
+		return $pessoa->{codigo};
+	}
+	
+	return undef;
+}
+
+# Pega o cliente de uma cirurgia
+sub getClienteFornecedorFromCirurgia {
+	my ($cirurgiaId) = @_;
+	my $dbh = &conecta_db();
+	my $query = "select cliente_codigo from cirurgia
+				where empresa_codigo = ? and id = ?";
+	my $sth = $dbh->prepare($query);
+	$sth->execute (getCodigoEmpresa(), $cirurgiaId);
+	if (!$sth->rows) {
+		print "Erro";
+		return undef;
+	}
+	my $cirurgia = $sth->fetchrow_hashref;
+	return $cirurgia->{cliente_codigo};
+	 
+}
+
+# Pega um cliente/fornecedor pelo seu código legado
+sub getPessoaByCodigoLegado {
+	my ($codigoLegado) = @_;
+	
+	my $dbh = &conecta_db();
+	my $query = "select codigo from pessoa
+		where discriminator like 'clientefornecedor'
+		and empresa = ? 
+		and ( codigoLegado like ?
+		or codigoLegado like concat('%|', ?)
+		or codigoLegado like concat(?, '|%')
+		or codigoLegado like concat('%|', ?, '|%') )
+		";
+		
+	my $sth = $dbh->prepare($query);
+	$sth->execute(
+		getCodigoEmpresa(), $codigoLegado, $codigoLegado, $codigoLegado, $codigoLegado,
+	);
+	if ($sth->rows) {
+		my $pessoa = $sth->fetchrow_hashref;
+		return $pessoa->{codigo};
+	}
+	print "Cliente/Fornecedor não encontrado: " . $codigoLegado . "\n";
+	return undef;
+}
+
+# Pega o tipo do logradouro de acordo com o endereço
+sub getTipoLogradouro {
+	my ($endereco) = @_;
+	if ($endereco =~ m/Avenida/gi || $endereco =~ m/Av\./gi || $endereco =~ m/Av/gi) {
+		return "AVENIDA";
+	} elsif ($endereco =~ m/Alameda/gi) {
+		return "ALAMEDA";
+	} elsif ($endereco =~ m/Estrada/gi || $endereco =~ m/Estr\./gi || $endereco =~ m/Est\./gi ){
+		return "EST";
+	} elsif ($endereco =~ m/Praça/gi || $endereco =~ m/Praca/gi || $endereco =~ m/PC\./gi) {
+		return "PRACA";
+	} elsif ($endereco =~ m/Rod/gi) {
+		return "RODOVIA";
+	} elsif ($endereco =~ m/Travessa/gi || $endereco =~ m/TV\./gi) {
+		return "TRAVESSA";
+	} else {
+		return "RUA";
+	}
+	
+}
+
+# Pega o número do endereço de uma string separada por ','
+sub getNumeroEndereco {
+	my ($endereco) = @_;
+	my @tokens = split(",", $endereco);
+	return $tokens[scalar(@tokens) - 1];
+}
+
+# Pega o código do médico de acordo com o nome e o crm
+sub getMedicoByNomeCrm {
+	my ($nome, $crm) = @_;
+	my $dbh = &conecta_db();
+	my $query = 'select codigo from medico
+		where nome like ? and crm like ? and empresa_codigo = ?';
+	my $sth = $dbh->prepare($query);
+	$sth->execute(
+		$nome, $crm, getCodigoEmpresa(),
+	); 
+	if ($sth->rows) {
+		my $medico = $sth->fetchrow_hashref;
+		return $medico->{codigo};
+	}
+	return undef;
+}
+
+# Pega um produto a partir da sua referencia e descricao
+sub getProdutoByRefDesc {
+	my ($referenciaFabricante, $descricao) = @_;
+	my $dbh = &conecta_db();
+	my $query = "select * from produto where descricao like ? and referenciaFabricante like ? and empresa_codigo = ?";
+	my $sth   = $dbh->prepare($query);
+	$sth->execute($descricao, $referenciaFabricante, getCodigoEmpresa());
+	if ($sth->rows) {
+		my $produto = $sth->fetchrow_hashref;
+		return $produto->{id};
+	} else {
+		return undef;
+	}
+}
+
+# Pega um produto pela sua referencia
+sub getProdutoByReferencia {
+	my ($referencia) = @_;
+	my $dbh = &conecta_db();
+	my $query = "select id from produto where referenciaFabricante = ? and empresa_codigo = ?";
+	my $sth   = $dbh->prepare($query);
+	$sth->execute($referencia, getCodigoEmpresa());
+	if (!$sth->rows) {
+		warn "Produto desconhecido: $referencia";
+	}
+	my $produto = $sth->fetchrow_hashref;
+
+	return $produto->{id};
+}
+
+# Pega um produto pela descrição
+sub getProdutoByDescricao {
+	my ($descricao) = @_;
+	my $dbh = &conecta_db();
+	my $query = "select id from produto where descricao = ? and empresa_codigo = ?";
+	my $sth   = $dbh->prepare($query);
+	$sth->execute($descricao, getCodigoEmpresa());
+	if (!$sth->rows) {
+		warn "Produto desconhecido: $descricao";
+	}
+	my $produto = $sth->fetchrow_hashref;
+
+	return $produto->{id};
+}
+
+# Nas importações em que o produto não possui referenciaFabricante, é criado um
+# As referencias são 3 letras e um número crescente
+# Função que pega o último número cadastrado
+sub getUltimoCodigoReferencia{
+	my $dbh = &conecta_db();
+	my $query = "SELECT referenciaFabricante FROM `produto` WHERE `empresa_codigo` = ? AND referenciaFabricante like '%OST-%' ORDER BY `id` DESC LIMIT 1;";
+	my $sth   = $dbh->prepare($query);
+	$sth->execute(getCodigoEmpresa());
+	if (!$sth->rows) {
+		return 1;
+	}
+	my $ref = $sth->fetchrow_hashref;
+	
+	# Pegar somente o número da referencia (EX.: OST-?)
+	my $n = substr($ref->{referenciaFabricante}, 4);
+	$n = $n + 1;
+	
+	return $n;
+}
+
+# Pega o lote de um produto pela referencia e quantidade em estoque
+sub getLoteByProduto {
+	my ($produto, $qtdCaixa) = @_;
+	my $dbh = &conecta_db();
+	my $query = "select l.id, l.produto_id, l.estoque 
+			from estoquelote l, produto p 
+			where l.empresa_codigo = ? and l.estoque != 0 and p.id = l.produto_id and p.referenciafabricante = ? and l.estoque >= ? 
+			order by l.estoque desc limit 1 ";
+	
+	my $sth = $dbh->prepare($query);
+	$sth->execute (getCodigoEmpresa(), $produto, $qtdCaixa);
+	if (!$sth->rows) {
+		warn "Não há estoque de $produto";
+	}
+	my $lote = $sth->fetchrow_hashref;
+	
+	return $lote;
+}
+
+# Pega um lote pelo seu id e pelo produtoId
+sub getLote {
+	my ($loteId, $produtoId) = @_;
+	my $dbh = &conecta_db();
+	my $query = "select id, estoque 
+			from estoquelote  
+			where empresa_codigo = ? and produto_id = ? and id = ?";
+	
+	my $sth = $dbh->prepare($query);
+	$sth->execute (getCodigoEmpresa(), $produtoId, $loteId);
+	if (!$sth->rows) {
+		warn "Não há lote $loteId de $produtoId";
+	}
+	my $lote = $sth->fetchrow_hashref;
+	
+	return $lote;
+	
+}
+
+# Retorna a unidade de medida de produto
+sub getUnidade {
+	my ($unidade) = @_;
+	if ($unidade =~ m/PC/gi || $unidade =~ m/PEÇ/gi) {
+		return 'PECA';
+	} elsif ($unidade =~ m/Kit/gi) {
+		return "KIT";
+	} elsif ($unidade =~ m/Mil/gi) {
+		return "MG";
+	} else {
+		return 'UN';
+	}
+}
+
+# (VIMAN) Retorna o tipo do produto no formato do ENUM
+sub getTipoProduto {
+	my ($tipo) = @_;
+	if ($tipo =~ m/10/gi) {
+		return 'IMPLANTE';
+	} elsif ($tipo =~ m/20/gi) {
+		return 'DESCARTAVEL';
+	} elsif ($tipo =~ m/30/gi) {
+		return 'INSTRUMENTAL'; 
+	} 
+	
+	return 'OUTROS';
+}
+
+# Pega o código de uma caixa pela sua descriçao
+# Caso a caixa não existe, é cadastrada
+sub existeCaixa {
+	my ($descricao) = @_;
+	my $dbh = &conecta_db();
+	
+	$descricao = preparaTexto($descricao);
+	my $sth;
+	my $query = "SELECT codigo FROM caixa
+		WHERE empresa = ? AND descricao = ? ";
+	
+	$sth = $dbh->prepare($query);
+	$sth->execute(getCodigoEmpresa(), $descricao);
+
+	if (!$sth->rows) {
+		# Não encontrada caixa, portanto cadastra
+		my $query = 'insert into caixa ( `descricao`, `emUso`, `empresa`, `bloqueada`, `ativa` ) 
+			values ( ?, ?, ?, ?, ? ) ;';
+		my $sth = $dbh->prepare($query);
+		$sth->execute( $descricao, getBoolean(0), getCodigoEmpresa(), getBoolean(0), getBoolean(1));
+		# Caso sucesso, retorna código da caixa
+		if ($sth->rows) {
+			my $codigoCaixa = getUltimoCodigoDB($dbh);
+			# Retorna código da caixa cadastrada
+			return $codigoCaixa;
+		} else {
+			# Caso erro, retorna nulo
+			return undef;
+		}
+	}
+	my $caixa = $sth->fetchrow_hashref;
+	return $caixa->{codigo};
+}
+
+# Pega um caixaItem pela caixa, lote e produto
+sub existeCaixaItem {
+	my ($caixaCodigo, $lote, $produto) = @_;
+	my $dbh = &conecta_db();
+	my $query = "SELECT i.codigo, i.quantidade FROM caixaitem i WHERE i.caixa_codigo = ? AND i.id = ? AND i.produto = ? AND i.empresa_codigo = ?;";
+	my $sth = $dbh->prepare($query);
+	$sth->execute($caixaCodigo, $lote, $produto, getCodigoEmpresa());
+	if (!$sth->rows) {
+		return undef;
+	}
+	my $caixaItem = $sth->fetchrow_hashref;
+
+	return $caixaItem; 
+}
+
+# Retorna a última sequência de uma caixa
+sub getUltimaSequenciaCaixa{
+	my ($codigoCaixa) = @_;
+	my $dbh = &conecta_db();
+	my $query = "SELECT i.sequencia FROM caixaitem i WHERE i.empresa_codigo = ? and i.caixa_codigo = ? ORDER BY i.sequencia DESC LIMIT 1 ";
+	my $sth   = $dbh->prepare($query);
+	$sth->execute(getCodigoEmpresa(), $codigoCaixa);
+	if (!$sth->rows) {
+		return 1;
+	}
+	my $sequencia = $sth->fetchrow_hashref;
+	
+	# Adiciona 1 a sequencia, para poder utilizar sem duplicar
+	return ($sequencia->{sequencia} + 1);
+}
+
+# (VIMAN)
+sub getCirurgiaFinalizada {
+	my ($status) = @_;
+	$status = apenasDigitos($status);
+	if ($status le 40) {
+		# Cirurgia aberta
+		return getBoolean(0);
+	} else {
+		# Cirurgia finalizada
+		return getBoolean(1);
+	}
+}
+
+# (VIMAN)
+sub getCirurgiaCancelada {
+	my ($status) = @_;
+	$status = apenasDigitos($status);
+	if ($status eq 89 || $status eq 90) {
+		# Cirurgia cancelada
+		return getBoolean(1);
+	} else {
+		# Cirurgia normal
+		return getBoolean(0);
+	}
+}
+
+# (VIMAN)
+sub getConsignacaoPermanente {
+	my ($tipo) = @_;
+	$tipo = preparaTexto($tipo);
+	if ($tipo eq "Permanente") {
+		return getBoolean(1);
+	} else {
+		return getBoolean(0);
+	}
+}
+
+# Pega uma cirurgia pelo código legado
+sub getCirurgiaByCodigoLegado {
+	my ($codigoLegado) = @_;
+	my $dbh = &conecta_db();
+	my $query = "select id from cirurgia 
+		where empresa_codigo = ? and codigoLegado = ?";
+	my $sth = $dbh->prepare($query);
+	$sth->execute(
+		getCodigoEmpresa(), $codigoLegado,
+	);
+	if ($sth->rows) {
+		my $cirurgia = $sth->fetchrow_hashref;
+		return $cirurgia->{id};
+	}
+	return undef;
+}
+
+# Pega um cfop cadastrado pelo seu número
+# Caso não exista, é cadastrado
+sub integraCfop {
+	my ($numero) = @_;
+	my $dbh = &conecta_db();
+	my $query = "select id from cfop where empresa_codigo = ? and numero = ?";
+	my $sth   = $dbh->prepare($query);
+	$sth->execute(getCodigoEmpresa(), $numero);
+	if (!$sth->rows) {
+		warn "CFOP não encontrado, cadastrando: $numero";
+		$query = "insert into cfop (descricao, empresa_codigo, numero) values (?, ?, ?)";
+		$sth   = $dbh->prepare($query);
+		$sth->execute($numero, getCodigoEmpresa(), $numero);
+		return getUltimoCodigoDB($dbh);
+		
+	}
+	my $cfop = $sth->fetchrow_hashref;
+
+	return $cfop->{id};
+}
+
+# Pega um número de cfop pelo id(PK)
+sub getNumeroCfop {
+	my ($cfop_id) = @_;
+	my $dbh = &conecta_db();
+	my $query = 'select numero from cfop where id = ?';
+	my $sth = $dbh->prepare($query);
+	$sth->execute($cfop_id);
+	if ($sth->rows) {
+		my $cfop = $sth->fetchrow_hashref;
+		return $cfop->{numero};
+	}
+}
+
+# Verifica se o ncm existe
+sub getNcm {
+	my ($id) = @_;
+	$id =~ s/\D//g;
+	my $dbh = &conecta_db();
+	
+	my $query = "select id from ncm where id = ?";
+	my $sth   = $dbh->prepare($query);
+	$sth->execute($id);
+	if (!$sth->rows) {
+		warn "NCM desconhecido: $id";
+		return undef;
+	}
+	my $ncm = $sth->fetchrow_hashref;
+
+	return $ncm->{id};
+}
+
+# Pega uma nfe pelo número da nota e cliente
+sub getNfeByNumeroCliente {
+	my ($numero, $codCliente) = @_;
+	my $dbh = &conecta_db();
+	my $query = "select codigo from nfe
+		where numero = ? and cliente_codigo = ? and empresa = ?";
+	my $sth = $dbh->prepare($query);
+	$sth->execute(
+		$numero, $codCliente, getCodigoEmpresa(),
+	);
+	if ($sth->rows) {
+		my $nfe = $sth->fetchrow_hashref;
+		return $nfe->{codigo};
+	} else {
+		return getNfeByNumero($numero);
+	}
+	
+}
+
+# Pega uma nfe pelo número da nota e cliente
+sub getNfeByNumero {
+	my ($numero) = @_;
+	my $dbh = &conecta_db();
+	my $query = "select codigo from nfe
+		where numero = ? and empresa = ?";
+	my $sth = $dbh->prepare($query);
+	$sth->execute(
+		$numero, getCodigoEmpresa(),
+	);
+	if ($sth->rows) {
+		my $nfe = $sth->fetchrow_hashref;
+		return $nfe->{codigo};
+	}
+	return undef;
+}
+
+# Pega uma nota fiscal pelo número da nota e seu cliente
+sub getNotaFiscalByNumeroCliente {
+	my ($numero, $codCliente) = @_;
+	my $dbh = &conecta_db();
+	my $query = "select codigo from notafiscal
+		where numero = ? and clienteFornecedor_codigo = ? and empresa = ?";
+	my $sth = $dbh->prepare($query);
+	$sth->execute(
+		$numero, $codCliente, getCodigoEmpresa(),
+	);
+	if ($sth->rows) {
+		my $notaFiscal = $sth->fetchrow_hashref;
+		return $notaFiscal->{codigo};
+	}
+	return undef;
+}
+
+# Pega um grupoConta pela descrição
+sub getGrupoConta {
+	my ($descricao) = @_;
+	my $query = 'select * from grupoconta where empresa = ? and descricao like ?';
+	my $dbh = &conecta_db();
+	my $sth = $dbh->prepare($query);
+	$sth->execute(getCodigoEmpresa(), $descricao);
+	if ($sth->rows) {
+		my $grupoConta = $sth->fetchrow_hashref;
+		return $grupoConta;
+	}
+}
+
+# Pega um grupoConta pelo código legado
+sub getGrupoContaByLegado {
+	my ($codigoLegado) = @_;
+	my $query = "select codigo from grupoconta where empresa = ? and codigoLegado = ?";
+	my $dbh = &conecta_db();
+	my $sth = $dbh->prepare($query);
+	$sth->execute(
+		getCodigoEmpresa(), $codigoLegado,
+	);
+	if ($sth->rows) {
+		my $grupoConta = $sth->fetchrow_hashref;
+		return $grupoConta->{codigo};
+	}
+	return undef;
+}
+
+# Pega uma conta pela sua descrição
+sub getConta {
+	my ($descricao) = @_;
+	my $query = "select * from conta where descricao like ? and empresa_codigo = ?";
+	my $dbh = &conecta_db();
+	my $sth = $dbh->prepare($query);
+	$sth->execute($descricao, getCodigoEmpresa());
+	if ($sth->rows) {
+		my $conta = $sth->fetchrow_hashref;
+		return $conta;
+	} else {
+		return undef;
+	}
+}
+
+# Pega o saldo de uma conta pelo seu id(PK)
+sub getSaldoConta {
+	my ($contaId) = @_;
+	my $query = "select saldo from contalancamento where conta_id = ? and empresa_codigo = ? order by id desc limit 1";
+	my $dbh = &conecta_db();
+	my $sth = $dbh->prepare($query);
+	$sth->execute($contaId, getCodigoEmpresa());
+	if ($sth->rows) {
+		my $conta = $sth->fetchrow_hashref;
+		return $conta->{saldo};
+	} else {
+		return undef;
+	}
+}
+
+# Pega o código de um contaCentroCusto pelo seu nome
+sub getCentroCustoCodigo {
+	my ($descricao) = @_;
+	my $query = "select codigo from contacentrocusto where nome like ? and empresa = ?";
+	my $dbh = &conecta_db();
+	my $sth = $dbh->prepare($query);
+	$sth->execute($descricao, getCodigoEmpresa());
+	if ($sth->rows) {
+		my $contaCentroCusto = $sth->fetchrow_hashref;
+		return $contaCentroCusto->{codigo};
+	} else {
+		return undef;
+	}
+}
+
+# Pega um contaCentroCusto pelo seu código legado
+sub getContaCentroCustoByLegado {
+	my ($codigoLegado) = @_;
+	my $query = "select codigo from contacentrocusto where codigolegado like ? and empresa = ?";
+	my $dbh = &conecta_db();
+	my $sth = $dbh->prepare($query);
+	$sth->execute($codigoLegado, getCodigoEmpresa());
+	if ($sth->rows) {
+		my $contaCentroCusto = $sth->fetchrow_hashref;
+		return $contaCentroCusto->{codigo};
+	} else {
+		return undef;
+	}
+}
+
+# Pega o número do contaCentroCusto pelo seu códigoLegado
+sub getNumeroContaByCodigoLegado {
+	my ($codigoLegado) = @_;
+	my $query = "select substr(numero, position('.' in numero)) as numero from contacentrocusto where codigolegado like ? and empresa = ?";
+	my $dbh = &conecta_db();
+	my $sth = $dbh->prepare($query);
+	$sth->execute($codigoLegado, getCodigoEmpresa());
+	if ($sth->rows) {
+		my $contaCentroCusto = $sth->fetchrow_hashref;
+		return $contaCentroCusto->{numero} . '.';
+	} else {
+		return '';
+	}
+}
+
+# Pega o código de um contaCentroCusto pelo seu codigo legado
+sub getCodigoContaByCodigoLegado {
+	my ($codigoLegado) = @_;
+	my $query = 'select codigo from contacentrocusto where codigolegado like ? and empresa = ?';
+	my $dbh = &conecta_db();
+	my $sth = $dbh->prepare($query);
+	$sth->execute($codigoLegado, getCodigoEmpresa());
+	if ($sth->rows) {
+		my $contaCentroCusto = $sth->fetchrow_hashref;
+		return $contaCentroCusto->{codigo};
+	} else {
+		return '';
+	}
+}
+
+# Cria o próximo número de cadastro de um contaCentroCusto de acordo com a contaSuperior
+sub getProximoNumero {
+	# Pegar o último número cadastrado com mesma conta superior
+	my ($codigoLegado, $grupoConta) = @_;
+	my $proxNumero;
+	my $dbh = &conecta_db();
+	my $query = 'select * from contacentrocusto where empresa = ? and grupo = ? ';
+	
+	if ($codigoLegado) {
+		$query .= 'and codigolegado like ? ';
+	} else {
+		$query .= 'and contasuperior is null ';
+	}
+	
+	$query .= 'order by codigo desc limit 1 ';
+	
+	my $sth = $dbh->prepare($query);
+	if ($codigoLegado) {
+		$sth->execute(getCodigoEmpresa(), $grupoConta, $codigoLegado);
+	} else {
+		$sth->execute(getCodigoEmpresa(), $grupoConta);
+	}
+	
+	# Caso haja resultados
+	if ($sth->rows) {
+		# Pega a conta
+		my $contaCentroCusto = $sth->fetchrow_hashref;
+		
+		# Pegar o próximo número
+		if ($codigoLegado) {
+			# Caso não haja contas inferiores a referenciada, pega o primeiro
+			$proxNumero = getNumeroContasInferiores($contaCentroCusto->{codigo}); 
+		} else {
+			# Caso código legado passado seja null
+			# Procurar o próximo número de uma conta que seja superior a todas
+			$proxNumero = $contaCentroCusto->{numero};
+		}
+		
+		if (!$proxNumero) {
+			$proxNumero = 1;
+		} else {
+			# Caso já haja contas inferiores a referenciada, pega próximo numero
+			# Percorre a string do banco enquanto houver '.'
+			while (index($proxNumero, '.') != -1) {
+				# Retira o ponto e pega a string restante
+				$proxNumero = substr($proxNumero, index($proxNumero, '.') + 1);
+			}
+			# Soma um ao resultado
+			$proxNumero = $proxNumero + 1;
+			
+		}
+		
+	} else {
+		# Primeira inserção do script
+		$proxNumero = 1;
+	}
+	return $proxNumero;
+}
+
+# Pega o número de um contaCentroCusto de mesmo contaSuperior
+sub getNumeroContasInferiores {
+	my ($codigo) = @_;
+	my $query = 'select numero from contacentrocusto where empresa = ? and contaSuperior = ? order by codigo desc limit 1';
+	my $dbh = &conecta_db();
+	my $sth = $dbh->prepare($query);
+	$sth->execute(getCodigoEmpresa(), $codigo);
+	if ($sth->rows) {
+		my $contaCentroCusto = $sth->fetchrow_hashref;
+		return $contaCentroCusto->{numero};
+	} else {
+		return undef;
+	}
+}
+
+return 1;
