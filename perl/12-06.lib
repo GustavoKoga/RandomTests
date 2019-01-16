@@ -5,36 +5,30 @@ use DBI;
 use Encode;
 use Business::BR::CNPJ qw(test_cnpj format_cnpj);
 use Business::BR::CPF qw(test_cpf format_cpf);
-
-=begin
-=cut
+use Time::Local 'timelocal_nocheck';
 
 # Conecta ao banco
 sub conecta_db {
-	my $dbh = DBI->connect('DBI:mysql:v2surgical:localhost', 'root', 'sliver');
+	my $dbh = DBI->connect('DBI:mysql:v2surgical:localhost', 'root', 'sliver') or die "Falha ao estabelecer conexão com o banco de dados";
 	return $dbh;
 }
 
-# Retorna apenas dígitos de uma string
-sub apenasDigitos {
-	my ($string) = @_;
-	$string =~ s/\D//g;
-	return $string;
-}
-
-# Tranforma um texto de utf-8 para latin1
-# Para palavras acentuadas
-sub toLatin1 {
-	my ($texto) = @_;
-	$texto = trim($texto);
-	my $decoded_text = decode('UTF-8', $texto);
-	$texto = encode('iso-latin-1', $decoded_text);
-	return $texto;
+# Retorna o último código salvo no BD
+sub getUltimoCodigoDB {
+	my ($dbh) = @_;
+	
+	my $query = 'select last_insert_id() as codigo';
+	my $sth = $dbh->prepare($query);
+	$sth->execute;
+	my $row = $sth->fetchrow_hashref;
+	
+	return $row->{codigo};
 }
 
 # Para pegar valor booleano para inserir no BD
 sub getBoolean {
 	my($bool) = @_;
+	$bool = preparaTexto($bool);
 	if (!$bool) {
 		return pack( 'b0', '110' );
 	} else {
@@ -56,8 +50,15 @@ sub formataHora {
 	return $hora;
 }
 
-# Pega uma data e transforma em uma timestamp
+# Pega uma data por um timestamp
 sub getTimestamp {
+	my ($timestamp) = @_;
+	my @dados = split(' ', $timestamp);
+	return preparaTimestamp($dados[0], $dados[1]);
+}
+
+# Pega uma data e transforma em uma timestamp
+sub montaTimestamp {
 	my ($data) = @_;
 	my ($dia, $mes, $ano) = split('/', $data);
 	$dia = converteValor($dia);
@@ -72,113 +73,171 @@ sub getTimestamp {
 	}
 }
 
+# Pega uma data e hora e monta um timestamp
+sub preparaTimestamp {
+	my ($data, $hora) = @_;
+	$data = preparaData($data);
+	$hora = formataHora($hora);
+	if ($data && $hora) {
+		return join(' ', $data, $hora);
+	}
+	return undef;
+}
+
 # Prepara um campo data e retorno dd/MM/YYYY
 sub preparaData {
 	my ($data) = @_;
+	if (!$data) {
+		return undef;
+	}
 	my ($dia, $mes, $ano) = split('/', $data);
-	$dia = converteValor($dia);
-	$mes = converteValor($mes);
-	$ano = converteValor($ano);
+	$dia = converteValor(apenasDigitos($dia));
+	$mes = converteValor(apenasDigitos($mes));
+	$ano = converteValor(apenasDigitos($ano));
+
 	if ($dia && $mes && $ano) {
-		return join('-', $ano, $mes, $dia);
+		return validaData(join('-', $ano, $mes, $dia));
 	} elsif ($dia && $mes){
 		# Apenas mes/ano
-		$ano = $dia;
+		$ano = $mes;
+		$mes = $dia;
 		$dia = '01';
-		return join('-', $ano, $mes, $dia);
+		return validaData(join('-', $ano, $mes, $dia));
 	} else {
 		return undef;		
 	}
 }
 
-sub preparaDataBR {
+# Prepara uma string para uma possível data
+sub stringToDate {
 	my ($data) = @_;
-	if (!$data) {
+	my $i = 4;
+	substr($data, $i, 0) = '-';
+	$i += 3;
+	substr($data, $i, 0) = '-';
+	return validaData($data);
+}
+
+# Valida data para uma existente
+sub validaData {
+	my ($data) = @_;
+	my ($ano, $mes, $dia) = split('-', $data);
+	$mes--; # because that's how unix/C treat the month value
+	
+	my $timeLocal = timelocal_nocheck( 0, 0, 0, $dia, $mes, $ano );
+	
+	my ($newMday,$newMon,$newYear) = (localtime($timeLocal))[3..5];
+	$newYear += 1900;
+	$newMon += 1;
+	
+	return join ('-', $newYear, $newMon, $newMday);
+}
+
+# Retorna apenas dígitos de uma string
+sub apenasDigitos {
+	my ($string) = @_;
+	if (!$string) {
 		return undef;
 	}
-	my ($ano, $mes, $dia) = split('-', $data);
-	$dia = converteValor($dia);
-	$mes = converteValor($mes);
-	$ano = converteValor($ano);
-	if ($dia && $mes && $ano) {
-		return join('/', $dia, $mes, $ano);
-	} else {
-		return undef;		
-	}
+	$string =~ s/\D//g;
+	return $string;
 }
 
 # Recebe um valor e converte para double
 sub converteValor {
 	my ($valor) = @_;
+	
 	$valor = trim($valor);
+	
+	if (!$valor) {
+		return 0;
+	}
+	
 	$valor =~ s/\,/\|/g;
 	$valor =~ s/[R\$\.]//g;
 	$valor =~ s/\|/\./g;
 	return $valor * 1;
 }
 
-# Recebe um valor e converte para double
-sub converteValorCsv {
+# Recebe um valor, verifica se é negativo e o converte para positivo
+sub converteValorNegativo {
 	my ($valor) = @_;
-	$valor = trim($valor);
-	$valor =~ s/\./\|/g;
-	$valor =~ s/[R\$]//g;
-	$valor =~ s/\|/\,/g;
+	
+	$valor = converteValor($valor);
+	
+	if (!$valor) {
+		return undef;
+	}
+	if ($valor le 0) {
+		$valor *= -1;
+	}
+	
 	return $valor;
+}
+
+# Tranforma um texto de utf-8 para latin1
+# Para palavras acentuadas
+sub toLatin1 {
+	my ($texto) = @_;
+	$texto = trim($texto);
+	my $decoded_text = decode('UTF-8', $texto);
+	$texto = encode('iso-latin-1', $decoded_text);
+	return $texto;
 }
 
 # Prepara um texto para ser utilizado
 sub preparaTexto {
 	my ($texto) = @_;
+	
+	if (!$texto) {
+		return undef;
+	}
+	
 	return trim(troca_letras($texto));
 }
 
 # Troca as letras incorretas
-sub troca_letras
-{
+sub troca_letras {
 	my($trocaletra) = @_;
+	
+	if (!$trocaletra) {
+		return undef;
+	}
+	
 	$trocaletra =~ tr/[a-z]/[A-Z]/;
-	$trocaletra =~ tr/áâãàäÁÂÃÀÄ/AAAAAAAAA/;
+	$trocaletra =~ tr/áâãàäÁÂÃÀÄ/AAAAAAAAAA/;
 	$trocaletra =~ tr/éêëèÉÊËÈ/EEEEEEEE/;
 	$trocaletra =~ tr/íïîÍÏÎ/IIIIII/;
-	$trocaletra =~ tr/óôöõòÓÔÖÕÒ/OOOOOOOOO/;
+	$trocaletra =~ tr/óôöõòÓÔÖÕÒ/OOOOOOOOOO/;
 	$trocaletra =~ tr/úüûÚÜÛ/UUUUUU/;
 	$trocaletra =~ tr/çÇ/CC/;
+	$trocaletra =~ s/–/-/;
+	$trocaletra =~ tr/Ñ/N/;
 	$trocaletra = &trim($trocaletra);
 	return($trocaletra);
 }
 
 # Retira os espaços do início e fim
-sub trim
-{
+sub trim {
 	my ($string) = @_;
+	
+	if (!$string) {
+		return undef;
+	}
+	
 	$string =~ s/^\s+//;
 	$string =~ s/\s+$//;
 	$string =~ s/^\s+//;
 	return $string;
 }
 
-# Retorna o último código salvo no BD
-sub getUltimoCodigoDB {
-	my ($dbh) = @_;
-	
-	my $query = 'select last_insert_id() as codigo';
-	my $sth = $dbh->prepare($query);
-	$sth->execute;
-	my $row = $sth->fetchrow_hashref;
-	
-	return $row->{codigo};
-}
-
 # Retira as aspas duplas do início/fim da string
 sub preparaNome {
 	my ($nome) = @_;
-	if (index($nome, '"') == 1) {
-		$nome = substr($nome, index($nome, '"'));
+	if (!$nome) {
+		return undef;
 	}
-	if (index($nome, '"') == length($nome)) {
-		$nome = substr($nome, -1);
-	}
+	$nome =~ s/"//g;
 	return $nome;
 }
 
@@ -212,11 +271,36 @@ sub cortarStringAntesChar {
 	return trim($string);
 }
 
+# Pega uma string de cep e padroniza para cadastro
+sub normalizaCep {
+	my ($cep) = @_;
+	
+	if (!$cep) {
+		return undef;
+	}
+	
+	$cep = apenasDigitos($cep);
+	if (length($cep) eq 8) {
+		substr($cep, 5, 0) = '-';
+	}
+	
+	return $cep;
+}
+
 # Realiza a validação do cnpj
 sub validaCnpj {
 	my ($cnpj) = @_;
 	
-	$cnpj = trim($cnpj);
+	$cnpj = apenasDigitos($cnpj);
+	
+	if (!$cnpj) {
+		return undef;
+	}
+	
+	while (length($cnpj) > 14) {
+		$cnpj = substr($cnpj, 1);
+	}
+	
 	if (!$cnpj) {
 		return undef;
 	}
@@ -242,6 +326,12 @@ sub validaCnpj {
 # Realiza a validação do CPF
 sub validaCpf {
 	my ($cpf) = @_;
+	
+	$cpf = apenasDigitos($cpf);
+	
+	if (!$cpf) {
+		return undef;
+	}
 
 	while (length($cpf) > 11) {
 		$cpf = substr($cpf, 1);
@@ -277,4 +367,15 @@ sub getNumeroEndereco {
 	return $tokens[scalar(@tokens) - 1];
 }
 
+# Pega a série da nota fiscal pela chave de acesso
+sub getSerieByChave {
+	my ($chave) = @_;
+	if ($chave) {
+		return substr($chave, 22, 3);
+	} else {
+		return undef;
+	}
+}
+
 return 1;
+
