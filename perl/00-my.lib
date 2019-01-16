@@ -57,8 +57,9 @@ sub conecta_db {
 	return $dbh;
 }
 
-sub conecta_db_demonstrar {
-	my $dbh = DBI->connect('DBI:mysql:v2surgical:s01.v2saude.com.br', 'suporte', 'pSDdEh9qtdFLsn10');
+# Conecta ao banco
+sub conecta_db_m02 {
+	my $dbh = DBI->connect('DBI:mysql:v2surgical_m02:localhost', 'root', 'sliver');
 	return $dbh;
 }
 
@@ -281,22 +282,6 @@ sub preparaData {
 		$ano = $dia;
 		$dia = '01';
 		return join('-', $ano, $mes, $dia);
-	} else {
-		return undef;		
-	}
-}
-
-sub preparaDataBR {
-	my ($data) = @_;
-	if (!$data) {
-		return undef;
-	}
-	my ($ano, $mes, $dia) = split('-', $data);
-	$dia = converteValor($dia);
-	$mes = converteValor($mes);
-	$ano = converteValor($ano);
-	if ($dia && $mes && $ano) {
-		return join('/', $dia, $mes, $ano);
 	} else {
 		return undef;		
 	}

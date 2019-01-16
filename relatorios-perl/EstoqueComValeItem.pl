@@ -5,7 +5,7 @@ use DBI;
 use Encode;
 require "00-my.lib";
 
-my $dbh = &conecta_db_demonstrar();
+my $dbh = &conecta_db_s01();
 
 my ($query, $sth);
 
